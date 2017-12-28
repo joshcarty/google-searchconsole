@@ -11,10 +11,40 @@ from . import utils
 
 class Query:
 
+    """
+    Return a query for certain metrics and dimensions.
+
+    This is the main way through which to produce reports from data in
+    Google Search Console.
+
+    The most important methods are:
+
+    * `range` to specify a date range for your query. Queries are still limited
+      by the 3 month limit and no Exception is raised if you exceed this limit.
+    * `dimension` to specify the dimensions you would like report on (country,
+      device, page, query, searchAppearance)
+    * `filter` to specify which rows to filter by.
+    * `limit` to specify a subset of results.
+
+    The query object is mostly immutable. Methods return a new query rather
+    than modifying in place, allowing you to create new queries without
+    unintentionally modifying the state of another query.
+
+    Usage:
+    >>> webproperty.query.range(start='today', days=-7).dimension('date').get()
+    <searchconsole.query.Report(rows=...)>
+    >>> query = webproperty.query.range(start='today', days=-7)\\
+    ...                          .dimension('date', 'query')\\
+    ...                          .filter('query', 'dress', 'contains')\\
+    ...                          .filter('page', '/womens-clothing/', 'contains')\\
+    ...                          .limit(20000)
+    >>> query.get()
+    <searchconsole.query.Report(rows=...)>
+    """
+
     _lock = 0
 
     def __init__(self, api, parameters=None, metadata=None):
-
         self.raw = {
             'startRow': 0,
             'rowLimit': 5000
@@ -40,6 +70,26 @@ class Query:
 
     @utils.immutable
     def range(self, start=None, stop=None, months=0, days=0):
+        """
+        Return a new query that fetches metrics within a given date range.
+
+        Args:
+            start (str or datetime.date): Query start date.
+            stop (str or datetime.date): Query end date.
+            months (int): Months from or to.
+            days (int): Days from or to.
+
+        Returns:
+            `searchconsole.query.Query`
+
+        Usage:
+            >>> query.range('2017-01-01', '2017-01-07')
+            <searchconsole.query.Query(...)>
+            >>> query.range('2017-01-01', days=28)
+            <searchconsole.query.Query(...)>
+            >>> query.range('2017-01-01', months=3)
+            <searchconsole.query.Query(...)>
+        """
 
         start, stop = utils.daterange(start, stop, days, months)
 
@@ -52,13 +102,46 @@ class Query:
 
     @utils.immutable
     def dimension(self, *dimensions):
+        """
+        Return a new query that fetches the specified dimensions.
+
+        Args:
+            *dimensions (str): Dimensions you would like to report on.
+                Possible values: country, device, page, query, searchAppearance
+
+        Returns:
+            `searchconsole.query.Query`
+
+        Usage:
+            >>> query.filter('query', 'dress', 'contains')
+            <searchconsole.query.Query(...)>
+        """
 
         self.raw['dimensions'] = list(dimensions)
 
         return self
 
     @utils.immutable
-    def filter(self, dimension, expression, operator='equals', group_type='and'):
+    def filter(self, dimension, expression, operator='equals',
+               group_type='and'):
+        """
+        Return a new query that filters rows by the specified filter.
+
+        Args:
+            dimension (str): Dimension you would like to filter on.
+            expression (str): The value you would like to filter.
+            operator (str): The operator you would like to use to filter.
+                Possible values: equals, contains, notContains.
+            group_type (str): The way in which you would like multiple filters
+                to combine. Note: currently only 'and' is supported by the API.
+
+        Returns:
+            `searchconsole.query.Query`
+
+        Usage:
+            >>> query.filter('query', 'dress', 'contains')
+            <searchconsole.query.Query(...)>
+        """
 
         dimension_filter = {
             'dimension': dimension,
@@ -75,18 +158,24 @@ class Query:
 
         return self
 
-    def clone(self):
-
-        query = self.__class__(
-            api=self.api,
-            parameters=deepcopy(self.raw),
-            metadata=deepcopy(self.meta)
-        )
-
-        return query
-
     @utils.immutable
     def limit(self, *limit_):
+        """
+        Return a new query limiting the number of rows returned. It can also
+        be used to offset a certain number of rows using a SQL-like syntax.
+
+        Args:
+            *limit_ (int): The maximum number of rows to return.
+
+        Returns:
+            `searchconsole.query.Query`
+
+        Usage:
+            >>> query.limit(10)
+            <searchconsole.query.Query(...)>
+            >>> query.limit(10, 10)
+            <searchconsole.query.Query(...)>
+        """
 
         if len(limit_) == 2:
             maximum, start = limit_
@@ -102,6 +191,16 @@ class Query:
         })
 
         return self
+
+    def clone(self):
+
+        query = self.__class__(
+            api=self.api,
+            parameters=deepcopy(self.raw),
+            metadata=deepcopy(self.meta)
+        )
+
+        return query
 
     @utils.immutable
     def next(self):
