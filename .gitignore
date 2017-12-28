@@ -99,3 +99,13 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# auth
+__pycache__/
+*.py[cod]
+*.swp
+.DS_Store
+.idea
+
+env
+auth
