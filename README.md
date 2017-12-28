@@ -1,5 +1,8 @@
 # Google Search Console for Python
 
+[![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
+
+
 `google-searchconsole` takes the pain out of working with the [Google Search
 Console](https://support.google.com/webmasters/answer/4559176?hl=en) Search Analytics Query API. It is written in Python and provides
 convenient features to make querying a site's search analytics data easier.
