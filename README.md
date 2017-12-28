@@ -24,8 +24,7 @@ fantastic [`google-analytics`](https://github.com/debrouwere/google-analytics) p
 
 First, install the package using:
 
-`python3 setup.py install`
-
+`pip3 install git+https://github.com/joshcarty/google-searchconsole`
 
 Then, create a new project in the [Google Developers Console](https://console.developers.google.com),
 enable the  Google Search Console API under "APIs & Services". Next, create credentials
