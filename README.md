@@ -1,5 +1,6 @@
 # Google Search Console for Python
 
+[![Build Status](https://travis-ci.org/joshcarty/google-searchconsole.svg?branch=master)](https://travis-ci.org/joshcarty/google-searchconsole)
 [![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
 
 
