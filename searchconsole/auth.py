@@ -1,9 +1,10 @@
 # encoding: utf-8
 
 """
-Convenience functions for authenticating with Google Search Console. You can
-use saved client configuration files or a mapping object and generate your
-credentials using OAuth2 or a serialized credentials file or mapping.
+Convenience function for authenticating with Google Search
+Console. You can use saved client configuration files or a
+mapping object and generate your credentials using OAuth2 or
+a serialized credentials file or mapping.
 
 For more details on formatting your configuration files, see:
 http://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html
@@ -21,6 +22,8 @@ from .account import Account
 
 def authenticate(client_config, credentials=None, serialize=None):
     """
+    The `authenticate` function will authenticate a user with the Google Search
+    Console API.
 
     Args:
         client_config (collections.abc.Mapping or str): Client configuration
@@ -33,6 +36,12 @@ def authenticate(client_config, credentials=None, serialize=None):
         `searchconsole.account.Account`: Account object containing web
         properties that can be queried.
 
+    Usage:
+        >>> import searchconsole
+        >>> account = searchconsole.authenticate(
+        ...     client_config='auth/client_secrets.json',
+        ...     credentials='auth/credentials.dat'
+        ... )
     """
 
     if not credentials:

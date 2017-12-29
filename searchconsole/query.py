@@ -268,6 +268,23 @@ class Query:
 
 
 class Report:
+    """
+    Executing a query will return a report, which contains the requested data.
+
+    Queries are executed and turned into a report lazily whenever data is
+    requested. You can explicitly create a report using the `Query.get` method.
+
+    Usage:
+    >>> webproperty.query.range(start='today', days=-7).dimension('date')
+    <searchconsole.query.Query(...)>
+    >>> webproperty.query.range(start='today', days=-7).dimension('date').get()
+    <searchconsole.query.Report(rows=...)>
+
+    You can access the data using:
+    >>> report = webproperty.query.range(start='today', days=-7).dimension('date').get()
+    >>> report.rows
+    [Row(...), ..., Row(...)]
+    """
 
     def __init__(self, raw, query):
         self.raw = []

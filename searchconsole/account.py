@@ -20,7 +20,7 @@ class Account:
     <searchconsole.account.Account(client_id='...')>
     >>> account[0]
     <searchconsole.account.WebProperty(url='...')>
-    >>> account['https://www.example.com/']
+    >>> account['https://www.johnlewis.com/']
     <searchconsole.account.WebProperty(url='...')>
     """
 
@@ -36,11 +36,6 @@ class Account:
         account directly with the properties exact URI.
 
         Usage:
-        >>> import searchconsole
-        >>> account = searchconsole.authenticate(
-        ...     client_config='auth/client_secrets.json',
-        ...     credentials='auth/credentials.dat'
-        ... )
         >>> account.webproperties[0]
         <searchconsole.account.WebProperty(url='...')>
         """
@@ -71,12 +66,7 @@ class WebProperty:
     to make your Search Analytics queries.
 
     Usage:
-    >>> import searchconsole
-    >>> account = searchconsole.authenticate(
-    ...     client_config='auth/client_secrets.json',
-    ...     credentials='auth/credentials.dat'
-    ... )
-    >>> webproperty = account['https://www.example.com/']
+    >>> webproperty = account['https://www.johnlewis.com/']
     >>> webproperty.query.range(start='today', days=-7).dimension('date').get()
     <searchconsole.query.Report(rows=...)>
     """
