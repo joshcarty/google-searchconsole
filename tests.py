@@ -1,10 +1,12 @@
 # encoding: utf-8
 
 import unittest
+import doctest
 import datetime
 import os
 
 import searchconsole
+from auth.creds import webproperty_uri
 
 
 class TestAuthentication(unittest.TestCase):
@@ -67,8 +69,7 @@ class AuthenticatedTestCase(unittest.TestCase):
             client_config='auth/client_secrets.json',
             credentials='auth/credentials.dat'
         )
-        self.webproperty = [p for p in self.account.webproperties if p.permission == 'siteFullUser'][0]
-        self.webproperty = self.account['https://www.johnlewis.com/']
+        self.webproperty = self.account[webproperty_uri]
         self.query = self.webproperty.query
 
 
@@ -153,13 +154,38 @@ class TestQuerying(AuthenticatedTestCase):
     def test_start_limit(self):
         """ It can limit the amount of results and the index at which
         to start.  """
-
         q = self.query.range('2017-11-01', '2017-11-10').dimension('date')
         full_report = q.get()
         limited_report = q.limit(2, 2).get()
 
         self.assertEqual(len(limited_report), 2)
         self.assertEqual(full_report[2:4], limited_report.rows)
+
+
+def load_tests(loader, tests, ignore):
+    """ Many docstrings contain doctests. Instead of using a separate doctest
+    runner, we use doctest's Unittest API."""
+    account = searchconsole.authenticate(
+        client_config='auth/client_secrets.json',
+        credentials='auth/credentials.dat'
+    )
+
+    globs = {
+        'account': account,
+        'webproperty': account[webproperty_uri],
+        'query': account[webproperty_uri].query
+    }
+
+    kwargs = {
+        'globs': globs,
+        'optionflags': doctest.ELLIPSIS
+    }
+
+    tests.addTests(doctest.DocTestSuite(searchconsole.auth, **kwargs))
+    tests.addTests(doctest.DocTestSuite(searchconsole.account, **kwargs))
+    tests.addTests(doctest.DocTestSuite(searchconsole.query, **kwargs))
+
+    return tests
 
 
 if __name__ == '__main__':
