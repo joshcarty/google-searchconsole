@@ -308,8 +308,6 @@ class Report:
         for row in self.raw[-1].get('rows', []):
             row = row.copy()
             dimensions = dict(zip(self.dimensions, row.pop('keys', [])))
-            if not dimensions:
-                print(query.raw, raw)
             self.rows.append(self.Row(**row, **dimensions))
 
     @property
