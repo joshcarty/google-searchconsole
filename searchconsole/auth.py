@@ -14,13 +14,14 @@ import collections.abc
 import json
 
 from apiclient import discovery
-from google.oauth2.credentials import Credentials
+import google.oauth2.credentials
+import google.oauth2.service_account
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .account import Account
 
 
-def authenticate(client_config, credentials=None, serialize=None):
+def authenticate(client_config, credentials=None, service_account=None, serialize=None):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -44,45 +45,58 @@ def authenticate(client_config, credentials=None, serialize=None):
         ... )
     """
 
-    if not credentials:
+    if not service_account:
 
-        if isinstance(client_config, collections.abc.Mapping):
+        if not credentials:
 
-            flow = InstalledAppFlow.from_client_config(
-                client_config=client_config,
-                scopes=['https://www.googleapis.com/auth/webmasters.readonly']
-            )
+            if isinstance(client_config, collections.abc.Mapping):
 
-        elif isinstance(client_config, str):
+                flow = InstalledAppFlow.from_client_config(
+                    client_config=client_config,
+                    scopes=['https://www.googleapis.com/auth/webmasters.readonly']
+                )
 
-            flow = InstalledAppFlow.from_client_secrets_file(
-                client_secrets_file=client_config,
-                scopes=['https://www.googleapis.com/auth/webmasters.readonly']
-            )
+            elif isinstance(client_config, str):
+
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    client_secrets_file=client_config,
+                    scopes=['https://www.googleapis.com/auth/webmasters.readonly']
+                )
+
+            else:
+
+                raise ValueError("Client secrets must be a mapping or path to file")
+
+            flow.run_local_server()
+            credentials = flow.credentials
 
         else:
 
-            raise ValueError("Client secrets must be a mapping or path to file")
+            if isinstance(credentials, str):
 
-        flow.run_local_server()
-        credentials = flow.credentials
+                with open(credentials, 'r') as f:
+                    credentials = json.load(f)
+
+            credentials = google.oauth2.credentials.Credentials(
+                token=credentials['token'],
+                refresh_token=credentials['refresh_token'],
+                id_token=credentials['id_token'],
+                token_uri=credentials['token_uri'],
+                client_id=credentials['client_id'],
+                client_secret=credentials['client_secret'],
+                scopes=credentials['scopes']
+            )
 
     else:
 
-        if isinstance(credentials, str):
+        if isinstance(service_account, str):
 
             with open(credentials, 'r') as f:
-                credentials = json.load(f)
+                service_account = json.load(f)
 
-        credentials = Credentials(
-            token=credentials['token'],
-            refresh_token=credentials['refresh_token'],
-            id_token=credentials['id_token'],
-            token_uri=credentials['token_uri'],
-            client_id=credentials['client_id'],
-            client_secret=credentials['client_secret'],
-            scopes=credentials['scopes']
-        )
+            credentials = google.oauth2.service_account.Credentials.from_service_account_info(
+                info=service_account
+            )
 
     service = discovery.build(
         serviceName='webmasters',
