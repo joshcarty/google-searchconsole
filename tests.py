@@ -92,7 +92,7 @@ class TestQuerying(AuthenticatedTestCase):
 
     def test_query(self):
         """It should be able to run a query and return a report. """
-        q = self.query.dimension('date').range('2017-11-01', '2017-11-03')
+        q = self.query.dimension('date').range('yesterday', days=-7)
         report = q.get()
 
         self.assertTrue(report.rows)
@@ -143,7 +143,7 @@ class TestQuerying(AuthenticatedTestCase):
 
     def test_limit(self):
         """ It can limit the total amount of results. """
-        q = self.query.range('2017-11-01', '2017-11-05').dimension('date')
+        q = self.query.range('yesterday', days=-7).dimension('date')
         full_report = q.get()
         limited_report = q.limit(2).get()
 
@@ -154,7 +154,7 @@ class TestQuerying(AuthenticatedTestCase):
     def test_start_limit(self):
         """ It can limit the amount of results and the index at which
         to start.  """
-        q = self.query.range('2017-11-01', '2017-11-10').dimension('date')
+        q = self.query.range('yesterday', days=-7).dimension('date')
         full_report = q.get()
         limited_report = q.limit(2, 2).get()
 
