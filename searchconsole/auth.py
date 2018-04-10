@@ -81,9 +81,7 @@ def authenticate(client_config=None, credentials=None, service_account=None,
                 scopes=['https://www.googleapis.com/auth/webmasters.readonly']
             )
 
-        flow.run_local_server()
-        credentials = flow.credentials
-
+        else:
             raise ValueError("Client secrets must be a mapping or path to file")
 
         flow.run_local_server()
@@ -104,9 +102,6 @@ def authenticate(client_config=None, credentials=None, service_account=None,
 
         raise ValueError("Insufficient credentials provided.")
 
-        else:
-
-            raise ValueError("Insufficient credentials provided.")
 
     service = discovery.build(
         serviceName='webmasters',
