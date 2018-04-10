@@ -32,6 +32,8 @@ def authenticate(client_config=None, credentials=None, service_account=None,
             parameters in the Google format specified in the module docstring.
         credentials (collections.abc.Mapping or str): OAuth2 credentials
             parameters in the Google format specified in the module docstring
+        service_account (collections.abc.Mapping or str): Path OAuth2 service
+            account credentials.
         serialize (str): Path to where credentials should be serialized.
 
     Returns:
@@ -46,7 +48,24 @@ def authenticate(client_config=None, credentials=None, service_account=None,
         ... )
     """
 
-    if client_config and not (credentials or service_account):
+    if credentials:
+
+        if isinstance(credentials, str):
+
+            with open(credentials, 'r') as f:
+                credentials = json.load(f)
+
+        credentials = google.oauth2.credentials.Credentials(
+            token=credentials['token'],
+            refresh_token=credentials['refresh_token'],
+            id_token=credentials['id_token'],
+            token_uri=credentials['token_uri'],
+            client_id=credentials['client_id'],
+            client_secret=credentials['client_secret'],
+            scopes=credentials['scopes']
+        )
+
+    elif client_config and not (credentials or service_account):
 
         if isinstance(client_config, collections.abc.Mapping):
 
@@ -69,37 +88,20 @@ def authenticate(client_config=None, credentials=None, service_account=None,
         flow.run_local_server()
         credentials = flow.credentials
 
-    if credentials:
-
-        if isinstance(credentials, str):
-
-            with open(credentials, 'r') as f:
-                credentials = json.load(f)
-
-        credentials = google.oauth2.credentials.Credentials(
-            token=credentials['token'],
-            refresh_token=credentials['refresh_token'],
-            id_token=credentials['id_token'],
-            token_uri=credentials['token_uri'],
-            client_id=credentials['client_id'],
-            client_secret=credentials['client_secret'],
-            scopes=credentials['scopes']
-        )
-
-    else:
+    elif service_account:
 
         if isinstance(service_account, str):
 
             with open(service_account, 'r') as f:
                 service_account = json.load(f)
 
-            credentials = google.oauth2.service_account.Credentials.from_service_account_info(
-                info=service_account
-            )
+        credentials = google.oauth2.service_account.Credentials.from_service_account_info(
+            info=service_account
+        )
 
-        else:
+    else:
 
-            raise ValueError("Insufficient credentials provided.")
+        raise ValueError("Insufficient credentials provided.")
 
     service = discovery.build(
         serviceName='webmasters',
