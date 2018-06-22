@@ -12,11 +12,10 @@ setup(name='searchconsole',
       packages=find_packages(),
       keywords='data analysis search console google api seo',
       install_requires=[
-          'google-api-python-client==1.6.4',
-          'python-dateutil==2.6.1',
-          'google-auth==1.2.1',
-          'google-auth-oauthlib==0.2.0',
-          'google-auth-httplib2==0.0.3'
+          'google-api-python-client>=1.7.3',
+          'python-dateutil>=2.7.3',
+          'google-auth>=1.5.0',
+          'google-auth-oauthlib>=0.2.0'
       ],
       test_suite='tests'
       )
