@@ -99,8 +99,8 @@ class TestQuerying(AuthenticatedTestCase):
 
     def test_multiple_dimensions(self):
         """ It should return more rows for multiple dimensions. This addresses issues
-        noted here: https://stackoverflow.com/questions/42987221/google-search-
-        console-api-unpredictable-results-when-using-multiple-dimensions """
+        noted here: https://productforums.google.com/forum/#!msg/webmasters/PKNGqSo1t
+        Kc/lAE0hcdGCQAJ """
         a = self.query.range('today', days=-7).dimension('query').get()
         b = self.query.range('today', days=-7).dimension('query', 'date').get()
 
