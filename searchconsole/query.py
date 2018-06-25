@@ -303,7 +303,7 @@ class Report:
 
         step = query.raw.get('rowLimit', 5000)
         rows = raw.get('rows', [])
-        self.is_complete = len(rows) < step
+        self.is_complete = not rows
 
         for row in self.raw[-1].get('rows', []):
             row = row.copy()
