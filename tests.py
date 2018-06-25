@@ -97,6 +97,15 @@ class TestQuerying(AuthenticatedTestCase):
 
         self.assertTrue(report.rows)
 
+    def test_multiple_dimensions(self):
+        """ It should return more rows for multiple dimensions. This addresses issues
+        noted here: https://stackoverflow.com/questions/42987221/google-search-
+        console-api-unpredictable-results-when-using-multiple-dimensions """
+        a = self.query.range('today', days=-7).dimension('query').get()
+        b = self.query.range('today', days=-7).dimension('query', 'date').get()
+
+        self.assertGreater(len(b), len(a))
+
     def test_range(self):
         """ It should handle different date types. """
         a = self.query.range(start='2017-01-01', stop='2017-01-03')
