@@ -187,7 +187,7 @@ class Query:
 
         self.raw.update({
             'startRow': start,
-            'rowLimit': min(5000, maximum)
+            'rowLimit': max(5000, maximum)
         })
 
         return self
