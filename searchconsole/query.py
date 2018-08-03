@@ -47,7 +47,7 @@ class Query:
     def __init__(self, api, parameters=None, metadata=None):
         self.raw = {
             'startRow': 0,
-            'rowLimit': 5000
+            'rowLimit': 25000
         }
 
         self.meta = {}
@@ -187,7 +187,7 @@ class Query:
 
         self.raw.update({
             'startRow': start,
-            'rowLimit': min(5000, maximum)
+            'rowLimit': min(25000, maximum)
         })
 
         return self
@@ -205,7 +205,7 @@ class Query:
     @utils.immutable
     def next(self):
 
-        step = self.raw.get('rowLimit', 5000)
+        step = self.raw.get('rowLimit', 25000)
         start = self.raw.get('startRow', 0) + step + 1
         self.raw['startRow'] = start
 
@@ -301,7 +301,7 @@ class Report:
         self.raw.append(raw)
         self.queries.append(query)
 
-        step = query.raw.get('rowLimit', 5000)
+        step = query.raw.get('rowLimit', 25000)
         rows = raw.get('rows', [])
         self.is_complete = not rows
 
