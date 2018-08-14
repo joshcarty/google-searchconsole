@@ -141,6 +141,11 @@ class TestQuerying(AuthenticatedTestCase):
 
         self.assertEqual(a.raw['endDate'], b.raw['endDate'])
 
+    def test_search_type(self):
+        """ It should be able to filter for the specific search type. """
+        a = self.query.search_type('image')
+        self.assertEqual(a.raw['searchType'], 'image')
+
     def test_immutable(self):
         """ Queries should be refined by creating a new query instance not
         by modifying the base query. """

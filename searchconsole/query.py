@@ -159,6 +159,26 @@ class Query:
         return self
 
     @utils.immutable
+    def search_type(self, search_type):
+        """
+        Return a new query that filters for the specified search type.
+        Args:
+            search_type (str): The search type you would like to report on.
+                Possible values: 'web' (default), 'image', 'video'.
+
+        Returns:
+            `searchconsole.query.Query`
+
+        Usage:
+            >>> query.search_type('image')
+            <searchconsole.query.Query(...)>
+        """
+
+        self.raw['searchType'] = search_type
+
+        return self
+
+    @utils.immutable
     def limit(self, *limit_):
         """
         Return a new query limiting the number of rows returned. It can also
