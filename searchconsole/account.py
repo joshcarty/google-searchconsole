@@ -54,10 +54,11 @@ class Account:
         return web_property
 
     def __repr__(self):
-        return "<searchconsole.account.Account(client_id='{}')>".format(
-            self.credentials.client_id
-        )
-
+        if hasattr(self.credentials, 'client_id'):
+            repr_str = "client_id='{}'".format(self.credentials.client_id)
+        else:
+            repr_str = "email='{}'".format(self.credentials.signer_email)
+        return "<searchconsole.account.Account({})>".format(repr_str)
 
 class WebProperty:
     """

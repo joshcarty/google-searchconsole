@@ -14,13 +14,15 @@ import collections.abc
 import json
 
 from apiclient import discovery
-from google.oauth2.credentials import Credentials
+import google.oauth2.credentials
+import google.oauth2.service_account
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .account import Account
 
 
-def authenticate(client_config, credentials=None, serialize=None):
+def authenticate(client_config=None, credentials=None, service_account=None,
+                 serialize=None):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -30,6 +32,8 @@ def authenticate(client_config, credentials=None, serialize=None):
             parameters in the Google format specified in the module docstring.
         credentials (collections.abc.Mapping or str): OAuth2 credentials
             parameters in the Google format specified in the module docstring
+        service_account (collections.abc.Mapping or str): Path OAuth2 service
+            account credentials.
         serialize (str): Path to where credentials should be serialized.
 
     Returns:
@@ -44,7 +48,24 @@ def authenticate(client_config, credentials=None, serialize=None):
         ... )
     """
 
-    if not credentials:
+    if credentials:
+
+        if isinstance(credentials, str):
+
+            with open(credentials, 'r') as f:
+                credentials = json.load(f)
+
+        credentials = google.oauth2.credentials.Credentials(
+            token=credentials['token'],
+            refresh_token=credentials['refresh_token'],
+            id_token=credentials['id_token'],
+            token_uri=credentials['token_uri'],
+            client_id=credentials['client_id'],
+            client_secret=credentials['client_secret'],
+            scopes=credentials['scopes']
+        )
+
+    elif client_config and not (credentials or service_account):
 
         if isinstance(client_config, collections.abc.Mapping):
 
@@ -61,28 +82,26 @@ def authenticate(client_config, credentials=None, serialize=None):
             )
 
         else:
-
             raise ValueError("Client secrets must be a mapping or path to file")
 
         flow.run_local_server()
         credentials = flow.credentials
 
+    elif service_account:
+
+        if isinstance(service_account, str):
+
+            with open(service_account, 'r') as f:
+                service_account = json.load(f)
+
+        credentials = google.oauth2.service_account.Credentials.from_service_account_info(
+            info=service_account
+        )
+
     else:
 
-        if isinstance(credentials, str):
+        raise ValueError("Insufficient credentials provided.")
 
-            with open(credentials, 'r') as f:
-                credentials = json.load(f)
-
-        credentials = Credentials(
-            token=credentials['token'],
-            refresh_token=credentials['refresh_token'],
-            id_token=credentials['id_token'],
-            token_uri=credentials['token_uri'],
-            client_id=credentials['client_id'],
-            client_secret=credentials['client_secret'],
-            scopes=credentials['scopes']
-        )
 
     service = discovery.build(
         serviceName='webmasters',
@@ -92,24 +111,37 @@ def authenticate(client_config, credentials=None, serialize=None):
     )
 
     if serialize:
-
-        if isinstance(serialize, str):
-
-            serialized = {
-                'token': credentials.token,
-                'refresh_token': credentials.refresh_token,
-                'id_token': credentials.id_token,
-                'token_uri': credentials.token_uri,
-                'client_id': credentials.client_id,
-                'client_secret': credentials.client_secret,
-                'scopes': credentials.scopes
-            }
-
-            with open(serialize, 'w') as f:
-                json.dump(serialized, f)
-
-        else:
-
-            raise TypeError('`serialize` must be a path.')
+        serialize_credentials(credentials, serialize)
 
     return Account(service, credentials)
+
+
+def serialize_credentials(credentials, path):
+    """
+    Serialize credentials as JSON file.
+
+    Args:
+        credentials (`google.oauth2.credentials.Credentials`): Credentials object.
+        path (`str`): Path where serialized credentials should be stored.
+
+    Returns:
+        None
+    """
+    if isinstance(path, str):
+
+        serialized = {
+            'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'id_token': credentials.id_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes
+        }
+
+        with open(path, 'w') as f:
+            json.dump(serialized, f)
+
+    else:
+
+        raise TypeError('`serialize` must be a path.')
