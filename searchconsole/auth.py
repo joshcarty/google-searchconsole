@@ -91,7 +91,7 @@ def authenticate(client_config=None, credentials=None, service_account=None,
 
     elif service_account:
 
-        if subject:
+        if user_email:
 
             if isinstance(service_account, str):
 
