@@ -22,7 +22,7 @@ from .account import Account
 
 
 def authenticate(client_config=None, credentials=None, service_account=None,
-                 serialize=None):
+                 user_email=None, serialize=None):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -34,6 +34,8 @@ def authenticate(client_config=None, credentials=None, service_account=None,
             parameters in the Google format specified in the module docstring
         service_account (collections.abc.Mapping or str): Path OAuth2 service
             account credentials.
+        user_email (str): The email address of the user to for which to
+            request delegated access when using a service account.
         serialize (str): Path to where credentials should be serialized.
 
     Returns:
@@ -89,14 +91,23 @@ def authenticate(client_config=None, credentials=None, service_account=None,
 
     elif service_account:
 
-        if isinstance(service_account, str):
+        if subject:
 
-            with open(service_account, 'r') as f:
-                service_account = json.load(f)
+            if isinstance(service_account, str):
 
-        credentials = google.oauth2.service_account.Credentials.from_service_account_info(
-            info=service_account
-        )
+                with open(service_account, 'r') as f:
+                    service_account = json.load(f)
+
+            credentials = google.oauth2.service_account.Credentials.from_service_account_info(
+                info=service_account,
+                scopes=['https://www.googleapis.com/auth/webmasters.readonly'],
+                subject=user_email
+            )
+
+        else:
+
+            raise ValueError("If using a Service Account, you must provide the \
+                email address of a user with access to the web property(s).")
 
     else:
 
