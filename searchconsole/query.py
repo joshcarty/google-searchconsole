@@ -226,7 +226,7 @@ class Query:
     def next(self):
 
         step = self.raw.get('rowLimit', 25000)
-        start = self.raw.get('startRow', 0) + step + 1
+        start = self.raw.get('startRow', 0) + step
         self.raw['startRow'] = start
 
         return self
