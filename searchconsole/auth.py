@@ -20,7 +20,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from .account import Account
 
 
-def authenticate(client_config, credentials=None, serialize=None):
+def authenticate(client_config, credentials=None, serialize=None, from_colab=False):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -64,7 +64,13 @@ def authenticate(client_config, credentials=None, serialize=None):
 
             raise ValueError("Client secrets must be a mapping or path to file")
 
-        flow.run_local_server()
+        if not from_colab:
+            flow.run_local_server()
+        else:
+            # Prompt for auth code if you run the code from Google Colaboratory
+            # See https://github.com/gsuitedevs/python-samples/issues/74#issuecomment-456489905
+            # See https://github.com/googleapis/google-auth-library-python-oauthlib/blob/master/google_auth_oauthlib/flow.py#L370
+            flow.run_console()
         credentials = flow.credentials
 
     else:
