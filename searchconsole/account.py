@@ -20,7 +20,7 @@ class Account:
     <searchconsole.account.Account(client_id='...')>
     >>> account[0]
     <searchconsole.account.WebProperty(url='...')>
-    >>> account['https://www.johnlewis.com/']
+    >>> account[www_webproperty_com]
     <searchconsole.account.WebProperty(url='...')>
     """
 
@@ -66,7 +66,7 @@ class WebProperty:
     to make your Search Analytics queries.
 
     Usage:
-    >>> webproperty = account['https://www.johnlewis.com/']
+    >>> webproperty = account[www_webproperty_com]
     >>> webproperty.query.range(start='today', days=-7).dimension('date').get()
     <searchconsole.query.Report(rows=...)>
     """

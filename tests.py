@@ -187,6 +187,7 @@ def load_tests(loader, tests, ignore):
     globs = {
         'account': account,
         'webproperty': account[webproperty_uri],
+        'www_webproperty_com': webproperty_uri,
         'query': account[webproperty_uri].query
     }
 
