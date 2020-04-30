@@ -110,3 +110,4 @@ __pycache__/
 env
 auth
 auth.tar
+.vscode
