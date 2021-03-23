@@ -179,12 +179,15 @@ class Query:
         return self
 
     @utils.immutable
-    def dataState(self, dataState='final'):
+    def data_state(self, data_state):
         """
-        Return a new query filtered by the specified dataState.
+        Return a new query filtered by the specified dataState, which allows you 
+        to include fresh (not finalized) data in your API call.  
+
         Args:
-            dataState (str): The dataState you would like to use for your report.
-                Possible values: 'final' (default - only finalized data), 'all' (finalized & fresh data).
+            dataState (str): The dataState you would like to use for your report. 
+                Possible values: 'final' (default - only finalized data), 
+                'all' (finalized & fresh data).
 
         Returns:
             `searchconsole.query.Query`
@@ -194,7 +197,7 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['dataState'] = search_type
+        self.raw['dataState'] = data_state
 
         return self
 
