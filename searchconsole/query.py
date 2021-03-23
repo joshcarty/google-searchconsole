@@ -184,6 +184,9 @@ class Query:
         Return a new query filtered by the specified dataState, which allows you 
         to include fresh (not finalized) data in your API call.  
 
+        Fresh data: data as recent as less than a day old. Fresh data point can 
+        be replaced with the final data point after a few days. 
+
         Args:
             dataState (str): The dataState you would like to use for your report. 
                 Possible values: 'final' (default - only finalized data), 
