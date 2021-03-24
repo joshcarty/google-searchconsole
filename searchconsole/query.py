@@ -200,7 +200,7 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['data_state'] = data_state
+        self.raw['dataState'] = data_state
 
         return self
 
