@@ -67,3 +67,12 @@ From then on, you can authenticate with:
 account = searchconsole.authenticate(client_config='client_secrets.json',
                                      credentials='credentials.json')
 ```
+
+### Integration with Pandas DataFrame 
+If you wish to load your data directly into a pandas
+DataFrame, to avoid loading it manually after the extraction, 
+you can do it easily: 
+
+```python
+report = webproperty.query.range('today',days=-7).dimension('page').get().to_dataframe()
+```
