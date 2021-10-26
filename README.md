@@ -76,3 +76,19 @@ you can do it easily:
 ```python
 report = webproperty.query.range('today',days=-7).dimension('page').get().to_dataframe()
 ```
+
+### Search types
+You can specify the search type data you want to retrieve by using the **search_type** method with your query. The following values are currently [supported by the API](https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics/query): *news, video, image, web, discover & googleNews*. If you don't use this method, the default value used will be **web**, 
+
+```python
+report = webproperty.query.search_type('discover').range('today',days=-7).dimension('page').get().to_dataframe()
+```
+
+### Filters
+You can apply filters while executing a query. The filter types supported by the API are the same available in the UI: *contains, equals, notContains, notEquals, includingRegex & excludingRegex.*
+
+```python
+report = webproperty.query.range('today',days=-7).dimension('page').filter('page','/blog/','contains').get().to_dataframe()
+```
+
+Note that if you use Regex in your filter, you must follow [RE2 syntax](https://github.com/google/re2/wiki/Syntax). 
