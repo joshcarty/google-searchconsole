@@ -179,22 +179,26 @@ class Query:
         return self
 
     @utils.immutable
-    def dataState(self, dataState='final'):
+    def data_state(self, data_state):
         """
-        Return a new query filtered by the specified dataState.
+        Return a new query filtered by the specified data_state, which allows you 
+        to include fresh (not finalized) data in your API call.  
+        Fresh data: data as recent as less than a day old. Fresh data point can 
+        be replaced with the final data point after a few days. 
         Args:
-            dataState (str): The dataState you would like to use for your report.
-                Possible values: 'final' (default - only finalized data), 'all' (finalized & fresh data).
+            data_state (str): The data_state you would like to use for your report. 
+                Possible values: 'final' (default - only finalized data), 
+                'all' (finalized & fresh data).
 
         Returns:
             `searchconsole.query.Query`
 
         Usage:
-            >>> query.dataState('final')
+            >>> query.data_state('final')
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['dataState'] = search_type
+        self.raw['dataState'] = data_state
 
         return self
 
