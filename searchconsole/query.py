@@ -131,7 +131,7 @@ class Query:
             dimension (str): Dimension you would like to filter on.
             expression (str): The value you would like to filter.
             operator (str): The operator you would like to use to filter.
-                Possible values: equals, contains, notContains.
+                Possible values: equals, contains, notContains, includingRegex, excludingRegex.
             group_type (str): The way in which you would like multiple filters
                 to combine. Note: currently only 'and' is supported by the API.
 
@@ -164,7 +164,7 @@ class Query:
         Return a new query that filters for the specified search type.
         Args:
             search_type (str): The search type you would like to report on.
-                Possible values: 'web' (default), 'image', 'video'.
+                Possible values: 'web' (default), 'image', 'video', 'discover','googleNews'.
 
         Returns:
             `searchconsole.query.Query`
@@ -174,7 +174,7 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['searchType'] = search_type
+        self.raw['type'] = search_type
 
         return self
 
