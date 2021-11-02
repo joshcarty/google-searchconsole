@@ -146,6 +146,14 @@ class TestQuerying(AuthenticatedTestCase):
         a = self.query.search_type('image')
         self.assertEqual(a.raw['type'], 'image')
 
+    def test_search_type_metrics(self):
+        """ Certain search types should not return position """
+        a = self.query.range('yesterday', days=-7).get()
+        b = self.query.search_type('googleNews').range('yesterday', days=-7).get()
+
+        self.assertTrue(hasattr(a.Row, 'position'))
+        self.assertFalse(hasattr(b.Row, 'position'))
+
     def test_immutable(self):
         """ Queries should be refined by creating a new query instance not
         by modifying the base query. """
