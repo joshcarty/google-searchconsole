@@ -337,11 +337,19 @@ class Report:
         self.queries = []
 
         self.dimensions = query.raw.get('dimensions', [])
-        self.metrics = ['clicks', 'impressions', 'ctr', 'position']
+        self.metrics = self._build_metrics(query)
         self.columns = self.dimensions + self.metrics
         self.Row = collections.namedtuple('Row', self.columns)
         self.rows = []
         self.append(raw, query)
+
+    @staticmethod
+    def _build_metrics(query):
+        metrics = ['clicks', 'impressions', 'ctr', 'position']
+        # Not all metrics are supported by all reports types.
+        if query.raw.get('type') in ('discover', 'googleNews'):
+            metrics.remove('position')
+        return metrics
 
     def append(self, raw, query):
         self.raw.append(raw)
