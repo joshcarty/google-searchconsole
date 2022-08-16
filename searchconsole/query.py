@@ -399,3 +399,30 @@ class Report:
     def to_dataframe(self):
         import pandas
         return pandas.DataFrame(self.rows)
+
+
+class IndexStatus:  
+    def __init__(self,urls):
+        self.domain = self.url
+        self.urls = urls
+        if 'sc-domain' in self.domain:
+        matching_urls = [s for s in urls if self.domain.split('sc-domain:')[1] in s]
+        if len(matching_urls) != len(urls):
+            raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+        else: 
+        matching_urls = [s for s in urls if self.domain in s]
+        if len(matching_urls) != len(urls):
+            raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+
+    def get(self):
+        import pandas
+        results = []
+        for url in self.urls:
+            request = {
+                'siteUrl': self.domain,
+                'inspectionUrl': url
+            }
+            result = account.service.urlInspection().index().inspect(body=request).execute()['inspectionResult']['indexStatusResult']
+            result['page'] = url
+            results.append(result)
+        return pandas.DataFrame(results)

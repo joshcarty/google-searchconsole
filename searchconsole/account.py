@@ -84,6 +84,7 @@ class WebProperty:
         self.url = raw['siteUrl']
         self.permission = raw['permissionLevel']
         self.query = query.Query(self)
+        self.index_status = query.IndexStatus(self)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
