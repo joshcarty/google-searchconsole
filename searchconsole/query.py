@@ -404,27 +404,26 @@ class Report:
 class IndexStatus:  
     def __init__(self, api):
         self.api = api
-        url = self.api.url
 
     def __repr__(self):
-        return "<searchconsole.index_status(url={rows})>".format(self.url)
+        return "<searchconsole.index_status(url={rows})>".format(self.api.url)
     
     def get(self, urls):
         import pandas
         self.urls = urls
         
         if 'sc-domain' in url:
-            matching_urls = [s for s in urls if url.split('sc-domain:')[1] in s]
+            matching_urls = [s for s in urls if self.api.url.split('sc-domain:')[1] in s]
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
         else: 
-            matching_urls = [s for s in urls if url in s]
+            matching_urls = [s for s in urls if self.api.url in s]
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
         results = []
         for url in self.urls:
             request = {
-                'siteUrl': self.url,
+                'siteUrl': self.api.url,
                 'inspectionUrl': url
             }
             result = self.api.account.service.urlInspection().index().inspect(body=request).execute()['inspectionResult']['indexStatusResult']
