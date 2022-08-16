@@ -414,6 +414,9 @@ class IndexStatus:
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
 
+    def __repr__(self):
+        return "<searchconsole.index_status(url={rows})>".format(self.url)
+    
     def get(self):
         import pandas
         results = []
