@@ -412,7 +412,10 @@ class IndexStatus:
         import pandas
         self.urls = urls
         
-        if 'sc-domain' in url:
+        if not isinstance(self.urls, list):
+            raise TypeError('You must provide a list of URLs.')
+        
+        if 'sc-domain' in self.api.url:
             matching_urls = [s for s in urls if self.api.url.split('sc-domain:')[1] in s]
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
