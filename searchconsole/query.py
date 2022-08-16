@@ -406,13 +406,13 @@ class IndexStatus:
         self.domain = self.url
         self.urls = urls
         if 'sc-domain' in self.domain:
-        matching_urls = [s for s in urls if self.domain.split('sc-domain:')[1] in s]
-        if len(matching_urls) != len(urls):
-            raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+            matching_urls = [s for s in urls if self.domain.split('sc-domain:')[1] in s]
+            if len(matching_urls) != len(urls):
+                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
         else: 
-        matching_urls = [s for s in urls if self.domain in s]
-        if len(matching_urls) != len(urls):
-            raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+            matching_urls = [s for s in urls if self.domain in s]
+            if len(matching_urls) != len(urls):
+                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
 
     def get(self):
         import pandas
