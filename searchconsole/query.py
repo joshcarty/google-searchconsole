@@ -406,7 +406,7 @@ class IndexStatus:
         self.api = api
 
     def __repr__(self):
-        return "<searchconsole.index_status(url={rows})>".format(self.api.url)
+        return "<searchconsole.index_status(url={})>".format(self.api.url)
     
     def get(self, urls):
         import pandas
