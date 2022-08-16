@@ -403,6 +403,7 @@ class Report:
 
 class IndexStatus:  
     def __init__(self, api):
+        self.api = api
         url = self.api.url
 
     def __repr__(self):
