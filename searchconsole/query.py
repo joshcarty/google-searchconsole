@@ -402,15 +402,16 @@ class Report:
 
 
 class IndexStatus:  
-    def __init__(self,urls):
-        self.domain = self.url
+    def __init__(self, api, urls):
         self.urls = urls
-        if 'sc-domain' in self.domain:
-            matching_urls = [s for s in urls if self.domain.split('sc-domain:')[1] in s]
+        domain = self.api.url
+        
+        if 'sc-domain' in domain:
+            matching_urls = [s for s in urls if domain.split('sc-domain:')[1] in s]
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
         else: 
-            matching_urls = [s for s in urls if self.domain in s]
+            matching_urls = [s for s in urls if domain in s]
             if len(matching_urls) != len(urls):
                 raise ValueError("At least one of your URLs doesn't belong to the selected property.")
 
@@ -422,10 +423,10 @@ class IndexStatus:
         results = []
         for url in self.urls:
             request = {
-                'siteUrl': self.domain,
+                'siteUrl': self.url,
                 'inspectionUrl': url
             }
-            result = account.service.urlInspection().index().inspect(body=request).execute()['inspectionResult']['indexStatusResult']
+            result = self.api.account.service.urlInspection().index().inspect(body=request).execute()['inspectionResult']['indexStatusResult']
             result['page'] = url
             results.append(result)
         return pandas.DataFrame(results)
