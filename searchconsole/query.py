@@ -402,24 +402,24 @@ class Report:
 
 
 class IndexStatus:  
-    def __init__(self, api, urls):
-        self.urls = urls
-        domain = self.api.url
-        
-        if 'sc-domain' in domain:
-            matching_urls = [s for s in urls if domain.split('sc-domain:')[1] in s]
-            if len(matching_urls) != len(urls):
-                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
-        else: 
-            matching_urls = [s for s in urls if domain in s]
-            if len(matching_urls) != len(urls):
-                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+    def __init__(self, api):
+        url = self.api.url
 
     def __repr__(self):
         return "<searchconsole.index_status(url={rows})>".format(self.url)
     
-    def get(self):
+    def get(self, urls):
         import pandas
+        self.urls = urls
+        
+        if 'sc-domain' in url:
+            matching_urls = [s for s in urls if url.split('sc-domain:')[1] in s]
+            if len(matching_urls) != len(urls):
+                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
+        else: 
+            matching_urls = [s for s in urls if url in s]
+            if len(matching_urls) != len(urls):
+                raise ValueError("At least one of your URLs doesn't belong to the selected property.")
         results = []
         for url in self.urls:
             request = {
