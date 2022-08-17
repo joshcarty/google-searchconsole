@@ -439,7 +439,7 @@ class IndexStatus:
     
 class IndexStatusReport:
     def __init__(self,report, index_status):
-        self.urls = self.raw.get('urls', [])
+        self.urls = index_status.raw.get('urls', [])
         
     def __repr__(self):
         return "<searchconsole.index_status.IndexStatusReport(url={})>".format(self.api.url)
