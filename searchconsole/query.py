@@ -438,7 +438,7 @@ class IndexStatus:
         return IndexStatusReport(report,self)
     
 class IndexStatusReport:
-    def __init__(self,report):
+    def __init__(self,report, index_status):
         self.urls = self.raw.get('urls', [])
         
     def __repr__(self):
