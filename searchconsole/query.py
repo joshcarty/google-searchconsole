@@ -435,3 +435,12 @@ class IndexStatus:
             result['page'] = url
             report.append(result)
         return report
+    
+class IndexStatusReport:
+    def __init__(self, raw, index_status):
+        self.raw = []
+        self.urls = index_status.raw.get('urls', [])
+        
+    def to_dataframe(self):
+        import pandas
+        return pandas.DataFrame(self.rows)
