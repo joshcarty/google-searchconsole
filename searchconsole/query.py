@@ -426,7 +426,7 @@ class IndexStatus:
     
     def get(self):
         report = []
-        for url in self.urls:
+        for url in self.raw['urls'] :
             request = {
                 'siteUrl': self.api.url,
                 'inspectionUrl': url
