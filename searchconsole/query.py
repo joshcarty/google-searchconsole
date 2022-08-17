@@ -446,4 +446,4 @@ class IndexStatusReport:
         
     def to_dataframe(self):
         import pandas
-        return pandas.DataFrame(self.rows)
+        return pandas.DataFrame(self)
