@@ -409,7 +409,6 @@ class IndexStatus:
     def __repr__(self):
         return "<searchconsole.index_status(url={})>".format(self.api.url)
     
-    @utils.immutable
     def urls(self, *urls):
         list_urls = list(urls)
         
