@@ -409,6 +409,16 @@ class IndexStatus:
     def __repr__(self):
         return "<searchconsole.index_status(url={})>".format(self.api.url)
     
+    def clone(self):
+
+        index_status = self.__class__(
+            api=self.api,
+            parameters=deepcopy(self.raw),
+            metadata=deepcopy(self.meta)
+        )
+
+        return index_status
+    
     def urls(self, *urls):
         list_urls = list(urls)
         
