@@ -434,12 +434,15 @@ class IndexStatus:
             result = self.api.account.service.urlInspection().index().inspect(body=request).execute()['inspectionResult']['indexStatusResult']
             result['page'] = url
             report.append(result)
-        return report
+            
+        return IndexStatusReport(report,self)
     
 class IndexStatusReport:
-    def __init__(self, raw, index_status):
-        self.raw = []
-        self.urls = index_status.raw.get('urls', [])
+    def __init__(self,report):
+        self.urls = self.raw.get('urls', [])
+        
+    def __repr__(self):
+        return "<searchconsole.index_status.IndexStatusReport(url={})>".format(self.api.url)
         
     def to_dataframe(self):
         import pandas
