@@ -435,11 +435,10 @@ class IndexStatus:
             result['page'] = url
             report.append(result)
         
-        self.raw['results'] = report
         return IndexStatusReport(report,self)
     
 class IndexStatusReport:
-    def __init__(self,report, index_status):
+    def __init__(self, index_status):
         self.urls = index_status.raw.get('urls', [])
         self.results = index_status.raw.get('results',[])
         
