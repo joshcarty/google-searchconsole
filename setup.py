@@ -14,7 +14,7 @@ setup(name='searchconsole',
       install_requires=[
           'google-api-python-client>=1.7.3',
           'python-dateutil>=2.7.3',
-          'google-auth>=1.5.0,<2dev',
+          'google-auth>=1.5.0',
           'google-auth-oauthlib>=0.2.0'
       ],
       test_suite='tests'
