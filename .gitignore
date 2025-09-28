@@ -111,3 +111,5 @@ env
 auth
 auth.tar
 .vscode
+#uv 
+*.lock 
