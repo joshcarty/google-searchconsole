@@ -16,11 +16,12 @@ import json
 from apiclient import discovery
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2 import service_account
 
 from .account import Account
 
 
-def authenticate(client_config, credentials=None, serialize=None, flow="web"):
+def authenticate(client_config, credentials=None, serialize=None, flow="web", service_account_auth=False):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -33,6 +34,8 @@ def authenticate(client_config, credentials=None, serialize=None, flow="web"):
         serialize (str): Path to where credentials should be serialized.
         flow (str): Authentication environment. Specify "console" for environments (like Google Colab)
             where the standard "web" flow isn't possible.
+        service_account_auth (bool): If `True`, use a service account for authentication.
+            Requires `client_config` to be a path to a service account JSON file.
 
     Returns:
         `searchconsole.account.Account`: Account object containing web
@@ -45,8 +48,18 @@ def authenticate(client_config, credentials=None, serialize=None, flow="web"):
         ...     credentials='auth/credentials.dat'
         ... )
     """
+    
+    if service_account_auth:
+        credentials = (
+            service_account
+            .Credentials
+            .from_service_account_file(
+                filename=client_config,
+                scopes=['https://www.googleapis.com/auth/webmasters.readonly']
+            )
+        )
 
-    if not credentials:
+    elif not credentials:
 
         if isinstance(client_config, collections.abc.Mapping):
 
