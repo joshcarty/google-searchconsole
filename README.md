@@ -27,7 +27,7 @@ fantastic [`google-analytics`](https://github.com/debrouwere/google-analytics) p
 
 First, install the package using:
 
-`pip3 install git+https://github.com/joshcarty/google-searchconsole`
+`$ pip install git+https://github.com/joshcarty/google-searchconsole`
 
 Then, create a new project in the [Google Developers Console](https://console.developers.google.com),
 enable the  Google Search Console API under "APIs & Services". Next, create credentials
@@ -91,4 +91,59 @@ You can apply filters while executing a query. The filter types supported by the
 report = webproperty.query.range('today',days=-7).dimension('page').filter('page','/blog/','contains').get().to_dataframe()
 ```
 
-Note that if you use Regex in your filter, you must follow [RE2 syntax](https://github.com/google/re2/wiki/Syntax). 
+Note that if you use Regex in your filter, you must follow [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+
+## Development
+
+### Setting Up for Development
+
+To contribute to this project or run tests locally, you'll need to install the package in development mode.
+
+We recommend using [uv](https://docs.astral.sh/uv/) for faster dependency management, but pip also works.
+
+1. **Clone the repository:**
+   ```bash
+   $ git clone https://github.com/joshcarty/google-searchconsole.git
+   $ cd google-searchconsole
+   ```
+
+2. **Install the package in editable mode:**
+
+   **Using uv (recommended):**
+   ```bash
+   $ uv sync
+   ```
+
+   **Using pip:**
+   ```bash
+   $ python -m venv .venv
+   $ source .venv/bin/activate
+   $ (.venv) pip install -e .
+   ```
+
+   This installs the package from the `src/` directory in editable mode, so any changes you make to the source code are immediately reflected without needing to reinstall.
+
+### Running Tests
+
+The project uses Python's built-in `unittest` framework. Tests require authentication credentials to be set as environment variables.
+
+1. **Set up authentication credentials:**
+   ```bash
+   $ export SEARCHCONSOLE_CLIENT_CONFIG='{"installed": {...}}'
+   $ export SEARCHCONSOLE_CREDENTIALS='{"token": "...", ...}'
+   $ export SEARCHCONSOLE_WEBPROPERTY_URI='https://www.example.com/'
+   ```
+
+2. **Run the tests:**
+
+   **Using uv (recommended):**
+   ```bash
+   $ uv run python -m unittest tests
+   ```
+
+   **Using pip:**
+   ```bash
+   $ python -m unittest tests
+   ```
+
+The test suite includes both unit tests and doctests embedded in the module docstrings.
