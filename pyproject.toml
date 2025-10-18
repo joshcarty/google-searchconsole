@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name='searchconsole'
+description='A wrapper for the Google Search Console API.'
+authors = [
+  {name = "Josh Carty", email = "carty.josh@gmail.com"},
+]
+version='0.0.3'
+license='MIT'
+dependencies = [
+    "google-api-python-client>=2.183.0",
+    "google-auth>=2.40.3",
+    "google-auth-oauthlib>=1.2.2",
+    "pandas>=2.2.2",
+    "python-dateutil>=2.9.0.post0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
