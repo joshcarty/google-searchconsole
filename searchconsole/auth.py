@@ -41,8 +41,8 @@ def authenticate(client_config, credentials=None, serialize=None, flow="web"):
     Usage:
         >>> import searchconsole
         >>> account = searchconsole.authenticate(
-        ...     client_config='auth/client_secrets.json',
-        ...     credentials='auth/credentials.dat'
+        ...     client_config=client_config_json,
+        ...     credentials=credentials_json
         ... )
     """
 

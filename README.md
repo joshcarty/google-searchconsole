@@ -1,6 +1,6 @@
 # Google Search Console for Python
 
-[![Build Status](https://travis-ci.org/joshcarty/google-searchconsole.svg?branch=master)](https://travis-ci.org/joshcarty/google-searchconsole)
+[![Tests](https://github.com/joshcarty/google-searchconsole/actions/workflows/tests.yml/badge.svg)](https://github.com/joshcarty/google-searchconsole/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 `google-searchconsole` takes the pain out of working with the [Google Search
