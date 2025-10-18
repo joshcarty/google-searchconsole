@@ -4,46 +4,68 @@ import unittest
 import doctest
 import datetime
 import os
+import json
 
 import searchconsole
-from auth.creds import webproperty_uri
+
+# Load credentials from environment variables
+def get_client_config():
+    """Get client config from environment variable."""
+    return json.loads(os.environ['SEARCHCONSOLE_CLIENT_CONFIG'])
+
+def get_credentials():
+    """Get credentials from environment variable."""
+    return json.loads(os.environ['SEARCHCONSOLE_CREDENTIALS'])
+
+def get_webproperty_uri():
+    """Get webproperty URI from environment variable."""
+    return os.environ['SEARCHCONSOLE_WEBPROPERTY_URI']
 
 
 class TestAuthentication(unittest.TestCase):
-    """ Test whether authentication procedure works. Currently
-    uses client_secrets and credentials files saved in ./auth
-    directory of repository.
+    """ Test whether authentication procedure works using environment
+    variables or local auth files.
     """
 
-    def test_mappings(self):
-        """ Test whether a webmasters service can be created using
-        Google format client_config and credentials mappings. """
-        from auth.creds import client_secrets, credentials
+    def setUp(self):
+        self.client_config = get_client_config()
+        self.credentials = get_credentials()
 
+    def test_authentication(self):
+        """ Test whether a webmasters service can be created using
+        client config and credentials from environment variables. """
         account = searchconsole.authenticate(
-            client_config=client_secrets,
-            credentials=credentials
+            client_config=self.client_config,
+            credentials=self.credentials
         )
 
         self.assertIsInstance(account, searchconsole.account.Account)
 
+    @unittest.skipUnless(
+        os.path.isfile("auth/client_config.json") and os.path.isfile("auth/credentials.json"),
+        "Skipping file-based test: auth files not found"
+    )
     def test_files(self):
         """ Test whether a webmasters service can be created using
         a Google format client secrets and credentials file. """
         account = searchconsole.authenticate(
-            client_config='auth/client_secrets.json',
-            credentials='auth/credentials.dat'
+            client_config="auth/client_config.json",
+            credentials="auth/credentials.json"
         )
 
         self.assertIsInstance(account, searchconsole.account.Account)
 
+    @unittest.skipUnless(
+        os.path.isdir('auth'),
+        "Skipping serialize test: auth directory not found"
+    )
     def test_serialize_credentials(self):
         """ Test whether a credentials object can serialized."""
-        serialized_file = 'auth/webmasters.dat'
+        serialized_file = 'auth/credentials.json'
 
-        account = searchconsole.authenticate(
-            client_config='auth/client_secrets.json',
-            credentials='auth/credentials.dat',
+        searchconsole.authenticate(
+            client_config=self.client_config,
+            credentials=self.credentials,
             serialize=serialized_file
         )
 
@@ -51,7 +73,7 @@ class TestAuthentication(unittest.TestCase):
         self.assertTrue(serialized_file_exists)
 
         serialized_account = searchconsole.authenticate(
-            client_config='auth/client_secrets.json',
+            client_config=self.client_config,
             credentials=serialized_file,
         )
 
@@ -61,15 +83,14 @@ class TestAuthentication(unittest.TestCase):
 
 
 class AuthenticatedTestCase(unittest.TestCase):
-    """Base test authenticated using file-based client secrets and
-    credentials."""
+    """Base test authenticated using environment variables or local auth files."""
 
     def setUp(self):
         self.account = searchconsole.authenticate(
-            client_config='auth/client_secrets.json',
-            credentials='auth/credentials.dat'
+            client_config=get_client_config(),
+            credentials=get_credentials()
         )
-        self.webproperty = self.account[webproperty_uri]
+        self.webproperty = self.account[get_webproperty_uri()]
         self.query = self.webproperty.query
 
 
@@ -187,15 +208,22 @@ class TestQuerying(AuthenticatedTestCase):
 def load_tests(loader, tests, ignore):
     """ Many docstrings contain doctests. Instead of using a separate doctest
     runner, we use doctest's Unittest API."""
+    client_config = get_client_config()
+    credentials = get_credentials()
+
     account = searchconsole.authenticate(
-        client_config='auth/client_secrets.json',
-        credentials='auth/credentials.dat'
+        client_config=client_config,
+        credentials=credentials
     )
+
+    webproperty_uri = get_webproperty_uri()
 
     globs = {
         'account': account,
         'webproperty': account[webproperty_uri],
         'www_webproperty_com': webproperty_uri,
+        'client_config_json': client_config,
+        'credentials_json': credentials,
         'query': account[webproperty_uri].query
     }
 
