@@ -25,12 +25,12 @@ def serialize(date):
 
 def extract(obj):
     if isinstance(obj, datetime.date):
-        if hasattr(obj, 'date'):
+        if hasattr(obj, "date"):
             return obj.date()
         else:
             return obj
     else:
-        raise ValueError('Not a datetime or date object.')
+        raise ValueError("Not a datetime or date object.")
 
 
 def normalize(obj):
@@ -47,13 +47,12 @@ def normalize(obj):
 
 def parse_description(s):
     today = datetime.date.today()
-    if s == 'today':
+    if s == "today":
         return today
-    elif s == 'yesterday':
+    elif s == "yesterday":
         return today - relativedelta(days=1)
     else:
-        raise ValueError('Cannot parse date string.')
-
+        raise ValueError("Cannot parse date string.")
 
 
 def daterange(start=None, stop=None, days=0, months=0):
@@ -65,9 +64,7 @@ def daterange(start=None, stop=None, days=0, months=0):
 
     if days or months:
         if start and stop:
-            raise Exception(
-                "A date range cannot be defined alongside months or days."
-            )
+            raise Exception("A date range cannot be defined alongside months or days.")
         else:
             if is_past:
                 days = days + 1
@@ -81,4 +78,3 @@ def daterange(start=None, stop=None, days=0, months=0):
     stop = stop or start
 
     return map(serialize, sorted([start, stop]))
-

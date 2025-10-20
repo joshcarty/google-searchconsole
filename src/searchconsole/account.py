@@ -39,8 +39,7 @@ class Account:
         >>> account.webproperties[0]
         <searchconsole.account.WebProperty(url='...')>
         """
-        raw_properties = self.service.sites().list().execute().get(
-            'siteEntry', [])
+        raw_properties = self.service.sites().list().execute().get("siteEntry", [])
 
         return [WebProperty(raw, self) for raw in raw_properties]
 
@@ -57,7 +56,9 @@ class Account:
         return web_property
 
     def __repr__(self):
-        return "<searchconsole.account.Account('{}')>".format(self.credentials.identifier)
+        return "<searchconsole.account.Account('{}')>".format(
+            self.credentials.identifier
+        )
 
 
 class WebProperty:
@@ -73,17 +74,17 @@ class WebProperty:
     """
 
     permission_levels = {
-        'siteFullUser': 1,
-        'siteOwner': 2,
-        'siteRestrictedUser': 3,
-        'siteUnverifiedUser': 4
+        "siteFullUser": 1,
+        "siteOwner": 2,
+        "siteRestrictedUser": 3,
+        "siteUnverifiedUser": 4,
     }
 
     def __init__(self, raw, account):
         self.account = account
         self.raw = raw
-        self.url = raw['siteUrl']
-        self.permission = raw['permissionLevel']
+        self.url = raw["siteUrl"]
+        self.permission = raw["permissionLevel"]
         self.query = query.Query(self)
 
     def __eq__(self, other):

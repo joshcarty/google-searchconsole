@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
     - uses: actions/checkout@v4
@@ -22,14 +22,57 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       run: uv python install ${{ matrix.python-version }}
 
-    - name: Install dependencies
-      run: uv sync --dev
+    - name: Install tox and tox-uv
+      run: uv tool install tox --with tox-uv
 
-    - name: Run tests
+    - name: Run tests with tox
       env:
         SEARCHCONSOLE_CLIENT_CONFIG: ${{ secrets.SEARCHCONSOLE_CLIENT_CONFIG }}
         SEARCHCONSOLE_CREDENTIALS: ${{ secrets.SEARCHCONSOLE_CREDENTIALS }}
         SEARCHCONSOLE_WEBPROPERTY_URI: ${{ secrets.SEARCHCONSOLE_WEBPROPERTY_URI }}
         SEARCHCONSOLE_SERVICE_ACCOUNT: ${{ secrets.SEARCHCONSOLE_SERVICE_ACCOUNT }}
       run: |
-        uv run python -m unittest tests
+        uv tool run tox -e py$(echo "${{ matrix.python-version }}" | tr -d '.')
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install 3.12
+
+    - name: Install tox and tox-uv
+      run: uv tool install tox --with tox-uv
+
+    - name: Run linting with tox
+      run: |
+        uv tool run tox -e lint
+
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install 3.12
+
+    - name: Install tox and tox-uv
+      run: uv tool install tox --with tox-uv
+
+    - name: Run coverage with tox
+      env:
+        SEARCHCONSOLE_CLIENT_CONFIG: ${{ secrets.SEARCHCONSOLE_CLIENT_CONFIG }}
+        SEARCHCONSOLE_CREDENTIALS: ${{ secrets.SEARCHCONSOLE_CREDENTIALS }}
+        SEARCHCONSOLE_WEBPROPERTY_URI: ${{ secrets.SEARCHCONSOLE_WEBPROPERTY_URI }}
+        SEARCHCONSOLE_SERVICE_ACCOUNT: ${{ secrets.SEARCHCONSOLE_SERVICE_ACCOUNT }}
+      run: |
+        uv tool run tox -e coverage
