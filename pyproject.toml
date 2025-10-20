@@ -17,5 +17,19 @@ dependencies = [
     "python-dateutil>=2.7.3",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "tox>=4.0.0",
+    "coverage>=7.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.1.0",
+    "tox>=4.0.0",
+    "coverage>=7.0.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
