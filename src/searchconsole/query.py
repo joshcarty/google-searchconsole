@@ -355,7 +355,6 @@ class Report:
         self.raw.append(raw)
         self.queries.append(query)
 
-        step = query.raw.get('rowLimit', 25000)
         rows = raw.get('rows', [])
         self.is_complete = not rows
 
