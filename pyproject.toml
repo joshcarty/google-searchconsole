@@ -11,11 +11,10 @@ authors = [
 version='0.0.3'
 license='MIT'
 dependencies = [
-    "google-api-python-client>=2.183.0",
-    "google-auth>=2.40.3",
-    "google-auth-oauthlib>=1.2.2",
-    "pandas>=2.2.2",
-    "python-dateutil>=2.9.0.post0",
+    "google-api-python-client>=1.7.3",
+    "google-auth>=1.5.0",
+    "google-auth-oauthlib>=0.2.0",
+    "python-dateutil>=2.7.3",
 ]
 
 [tool.setuptools.packages.find]
