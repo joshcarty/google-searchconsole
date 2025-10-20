@@ -21,6 +21,7 @@ dependencies = [
 dev = [
     "ruff>=0.1.0",
     "tox>=4.0.0",
+    "tox-uv>=1.29.0",
     "coverage>=7.0.0",
 ]
 
@@ -28,6 +29,7 @@ dev = [
 dev = [
     "ruff>=0.1.0",
     "tox>=4.0.0",
+    "tox-uv>=1.29.0",
     "coverage>=7.0.0",
 ]
 
