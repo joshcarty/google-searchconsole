@@ -10,7 +10,6 @@ from . import utils
 
 
 class Query:
-
     """
     Return a query for certain metrics and dimensions.
 
@@ -45,10 +44,7 @@ class Query:
     _lock = 0
 
     def __init__(self, api, parameters=None, metadata=None):
-        self.raw = {
-            'startRow': 0,
-            'rowLimit': 25000
-        }
+        self.raw = {"startRow": 0, "rowLimit": 25000}
 
         self.meta = {}
         self.api = api
@@ -59,7 +55,6 @@ class Query:
             self.meta.update(metadata)
 
     def _wait(self):
-
         now = time.time()
         elapsed = now - self._lock
         wait = max(0, 1 - elapsed)
@@ -93,10 +88,7 @@ class Query:
 
         start, stop = utils.daterange(start, stop, days, months)
 
-        self.raw.update({
-            'startDate': start,
-            'endDate': stop
-        })
+        self.raw.update({"startDate": start, "endDate": stop})
 
         return self
 
@@ -117,13 +109,12 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['dimensions'] = list(dimensions)
+        self.raw["dimensions"] = list(dimensions)
 
         return self
 
     @utils.immutable
-    def filter(self, dimension, expression, operator='equals',
-               group_type='and'):
+    def filter(self, dimension, expression, operator="equals", group_type="and"):
         """
         Return a new query that filters rows by the specified filter.
 
@@ -144,17 +135,14 @@ class Query:
         """
 
         dimension_filter = {
-            'dimension': dimension,
-            'expression': expression,
-            'operator': operator
+            "dimension": dimension,
+            "expression": expression,
+            "operator": operator,
         }
 
-        filter_group = {
-            'groupType': group_type,
-            'filters': [dimension_filter]
-        }
+        filter_group = {"groupType": group_type, "filters": [dimension_filter]}
 
-        self.raw.setdefault('dimensionFilterGroups', []).append(filter_group)
+        self.raw.setdefault("dimensionFilterGroups", []).append(filter_group)
 
         return self
 
@@ -174,22 +162,22 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['type'] = search_type
+        self.raw["type"] = search_type
 
         return self
 
     @utils.immutable
     def data_state(self, data_state):
         """
-        Return a new query filtered by the specified data_state, which allows you 
-        to include fresh (not finalized) data in your API call.  
+        Return a new query filtered by the specified data_state, which allows you
+        to include fresh (not finalized) data in your API call.
 
-        Fresh data: data as recent as less than a day old. Fresh data point can 
-        be replaced with the final data point after a few days. 
+        Fresh data: data as recent as less than a day old. Fresh data point can
+        be replaced with the final data point after a few days.
 
         Args:
-            data_state (str): The data_state you would like to use for your report. 
-                Possible values: 'final' (default - only finalized data), 
+            data_state (str): The data_state you would like to use for your report.
+                Possible values: 'final' (default - only finalized data),
                 'all' (finalized & fresh data).
 
         Returns:
@@ -200,7 +188,7 @@ class Query:
             <searchconsole.query.Query(...)>
         """
 
-        self.raw['dataState'] = data_state
+        self.raw["dataState"] = data_state
 
         return self
 
@@ -229,36 +217,28 @@ class Query:
             start = 0
             maximum = limit_[0]
 
-        self.meta['limit'] = maximum
+        self.meta["limit"] = maximum
 
-        self.raw.update({
-            'startRow': start,
-            'rowLimit': min(25000, maximum)
-        })
+        self.raw.update({"startRow": start, "rowLimit": min(25000, maximum)})
 
         return self
 
     def clone(self):
-
         query = self.__class__(
-            api=self.api,
-            parameters=deepcopy(self.raw),
-            metadata=deepcopy(self.meta)
+            api=self.api, parameters=deepcopy(self.raw), metadata=deepcopy(self.meta)
         )
 
         return query
 
     @utils.immutable
     def next(self):
-
-        step = self.raw.get('rowLimit', 25000)
-        start = self.raw.get('startRow', 0) + step
-        self.raw['startRow'] = start
+        step = self.raw.get("rowLimit", 25000)
+        start = self.raw.get("startRow", 0) + step
+        self.raw["startRow"] = start
 
         return self
 
     def get(self):
-
         report = None
         cursor = self
         is_enough = False
@@ -273,14 +253,13 @@ class Query:
             else:
                 report = chunk
 
-            is_enough = len(report.rows) >= self.meta.get('limit', float('inf'))
+            is_enough = len(report.rows) >= self.meta.get("limit", float("inf"))
             is_complete = report.is_complete
             cursor = cursor.next()
 
         return report
 
     def build(self, copy=True):
-
         if copy:
             raw = deepcopy(self.raw)
         else:
@@ -289,14 +268,16 @@ class Query:
         return raw
 
     def execute(self):
-
         raw = self.build()
         url = self.api.url
 
         try:
             self._wait()
-            response = self.api.account.service.searchanalytics().query(
-                siteUrl=url, body=raw).execute()
+            response = (
+                self.api.account.service.searchanalytics()
+                .query(siteUrl=url, body=raw)
+                .execute()
+            )
         except googleapiclient.errors.HttpError as e:
             raise e
 
@@ -308,8 +289,8 @@ class Query:
         return False
 
     def __repr__(self):
-        return '<searchconsole.query.Query(dimensions={})>'.format(
-            str(self.raw.get('dimensions', []))
+        return "<searchconsole.query.Query(dimensions={})>".format(
+            str(self.raw.get("dimensions", []))
         )
 
 
@@ -336,32 +317,31 @@ class Report:
         self.raw = []
         self.queries = []
 
-        self.dimensions = query.raw.get('dimensions', [])
+        self.dimensions = query.raw.get("dimensions", [])
         self.metrics = self._build_metrics(query)
         self.columns = self.dimensions + self.metrics
-        self.Row = collections.namedtuple('Row', self.columns)
+        self.Row = collections.namedtuple("Row", self.columns)
         self.rows = []
         self.append(raw, query)
 
     @staticmethod
     def _build_metrics(query):
-        metrics = ['clicks', 'impressions', 'ctr', 'position']
+        metrics = ["clicks", "impressions", "ctr", "position"]
         # Not all metrics are supported by all reports types.
-        if query.raw.get('type') in ('discover', 'googleNews'):
-            metrics.remove('position')
+        if query.raw.get("type") in ("discover", "googleNews"):
+            metrics.remove("position")
         return metrics
 
     def append(self, raw, query):
         self.raw.append(raw)
         self.queries.append(query)
 
-        step = query.raw.get('rowLimit', 25000)
-        rows = raw.get('rows', [])
+        rows = raw.get("rows", [])
         self.is_complete = not rows
 
-        for row in self.raw[-1].get('rows', []):
+        for row in self.raw[-1].get("rows", []):
             row = row.copy()
-            dimensions = dict(zip(self.dimensions, row.pop('keys', [])))
+            dimensions = dict(zip(self.dimensions, row.pop("keys", [])))
             self.rows.append(self.Row(**row, **dimensions))
 
     @property
@@ -398,4 +378,5 @@ class Report:
 
     def to_dataframe(self):
         import pandas
+
         return pandas.DataFrame(self.rows)

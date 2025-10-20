@@ -23,7 +23,13 @@ from google.oauth2.service_account import Credentials as _ServiceAccountCredenti
 from .account import Account
 
 
-def authenticate(client_config=None, credentials=None, serialize=None, flow="web", service_account=None):
+def authenticate(
+    client_config=None,
+    credentials=None,
+    serialize=None,
+    flow="web",
+    service_account=None,
+):
     """
     The `authenticate` function will authenticate a user with the Google Search
     Console API.
@@ -92,21 +98,17 @@ def authenticate(client_config=None, credentials=None, serialize=None, flow="web
 
 
 class Credentials(abc.ABC):
-
     WEBMASTER_SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 
     @property
     @abc.abstractmethod
-    def identifier(self):
-        ...
+    def identifier(self): ...
 
     @abc.abstractmethod
-    def to_dict(self):
-        ...
+    def to_dict(self): ...
 
     @abc.abstractmethod
-    def from_dict(cls, data):
-        ...
+    def from_dict(cls, data): ...
 
     @classmethod
     def from_serialized(cls, file_path):
