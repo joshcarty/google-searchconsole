@@ -8,7 +8,6 @@ import json
 
 import searchconsole
 
-# Load credentials from environment variables
 def get_client_config():
     """Get client config from environment variable."""
     return json.loads(os.environ['SEARCHCONSOLE_CLIENT_CONFIG'])
@@ -20,6 +19,10 @@ def get_credentials():
 def get_webproperty_uri():
     """Get webproperty URI from environment variable."""
     return os.environ['SEARCHCONSOLE_WEBPROPERTY_URI']
+
+def get_service_account():
+    """Get service account from environment variable."""
+    return json.loads(os.environ['SEARCHCONSOLE_SERVICE_ACCOUNT'])
 
 
 class TestAuthentication(unittest.TestCase):
@@ -37,6 +40,15 @@ class TestAuthentication(unittest.TestCase):
         account = searchconsole.authenticate(
             client_config=self.client_config,
             credentials=self.credentials
+        )
+
+        self.assertIsInstance(account, searchconsole.account.Account)
+    
+    def test_service_account_authentication(self):
+        """ Test whether a webmasters service can be created using
+        a service account JSON file. """
+        account = searchconsole.authenticate(
+            service_account=get_service_account(),
         )
 
         self.assertIsInstance(account, searchconsole.account.Account)

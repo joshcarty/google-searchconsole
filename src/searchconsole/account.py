@@ -17,7 +17,7 @@ class Account:
     ...     credentials=credentials_json
     ... )
     >>> account
-    <searchconsole.account.Account(client_id='...')>
+    <searchconsole.account.Account('...')>
     >>> account[0]
     <searchconsole.account.WebProperty(url='...')>
     >>> account[www_webproperty_com]
@@ -44,6 +44,9 @@ class Account:
 
         return [WebProperty(raw, self) for raw in raw_properties]
 
+    def serialize_credentials(self, path):
+        return self.credentials.serialize(path)
+
     def __getitem__(self, item):
         if isinstance(item, str):
             properties = [p for p in self.webproperties if p.url == item]
@@ -54,9 +57,7 @@ class Account:
         return web_property
 
     def __repr__(self):
-        return "<searchconsole.account.Account(client_id='{}')>".format(
-            self.credentials.client_id
-        )
+        return "<searchconsole.account.Account('{}')>".format(self.credentials.identifier)
 
 
 class WebProperty:
