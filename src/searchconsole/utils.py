@@ -1,7 +1,9 @@
 # encoding: utf-8
 
+import collections.abc
 import datetime
 import functools
+import json
 
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
@@ -78,3 +80,13 @@ def daterange(start=None, stop=None, days=0, months=0):
     stop = stop or start
 
     return map(serialize, sorted([start, stop]))
+
+
+def parse_config(data_or_file_path):
+    if isinstance(data_or_file_path, str):
+        with open(data_or_file_path, "r") as f:
+            return json.load(f)
+    elif isinstance(data_or_file_path, collections.abc.Mapping):
+        return dict(data_or_file_path)
+    else:
+        raise ValueError("Config must be a file path or mapping object like a dict")
