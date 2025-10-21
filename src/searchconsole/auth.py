@@ -148,6 +148,16 @@ class OAuth2Credentials(Credentials):
 
     @classmethod
     def authenticate(cls, client_config, flow="web"):
+        if isinstance(client_config, str):
+            with open(client_config, "r") as f:
+                client_config = json.load(f)
+        elif isinstance(client_config, collections.abc.Mapping):
+            client_config = dict(client_config)
+        else:
+            raise ValueError(
+                "Client config must be a file path or mapping object like a dict"
+            )
+
         auth_flow = InstalledAppFlow.from_client_config(
             client_config=client_config, scopes=cls.WEBMASTER_SCOPES
         )
