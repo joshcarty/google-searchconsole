@@ -11,8 +11,8 @@ http://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauth
 """
 
 import abc
-import collections.abc
 import json
+import urllib
 import warnings
 
 from apiclient import discovery
@@ -21,6 +21,7 @@ from google.oauth2.service_account import Credentials as _ServiceAccountCredenti
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .account import Account
+from .utils import parse_config
 
 
 def authenticate(
@@ -122,16 +123,7 @@ class Credentials(abc.ABC):
 
     @classmethod
     def from_config(cls, data_or_file_path):
-        if isinstance(data_or_file_path, str):
-            with open(data_or_file_path, "r") as f:
-                data = json.load(f)
-        elif isinstance(data_or_file_path, collections.abc.Mapping):
-            data = dict(data_or_file_path)
-        else:
-            raise ValueError(
-                "Credentials must be either a file path or mapping object like a dict"
-            )
-
+        data = parse_config(data_or_file_path)
         return cls.from_dict(data)
 
 
@@ -148,28 +140,14 @@ class OAuth2Credentials(Credentials):
 
     @classmethod
     def authenticate(cls, client_config, flow="web"):
-        if isinstance(client_config, str):
-            with open(client_config, "r") as f:
-                client_config = json.load(f)
-        elif isinstance(client_config, collections.abc.Mapping):
-            client_config = dict(client_config)
-        else:
-            raise ValueError(
-                "Client config must be a file path or mapping object like a dict"
-            )
-
-        auth_flow = InstalledAppFlow.from_client_config(
-            client_config=client_config, scopes=cls.WEBMASTER_SCOPES
-        )
+        oauth2_flow = OAuth2Flow(client_config, cls.WEBMASTER_SCOPES)
 
         if flow == "web":
-            auth_flow.run_local_server() if flow == "web" else auth_flow.run_console()
+            return oauth2_flow.web_flow()
         elif flow == "console":
-            auth_flow.run_console()
+            return oauth2_flow.console_flow()
         else:
             raise ValueError("Authentication flow '{}' not supported".format(flow))
-
-        return cls(auth_flow.credentials)
 
     @classmethod
     def from_dict(cls, data):
@@ -218,3 +196,48 @@ class ServiceAccountCredentials(Credentials):
             "Serialization is not supported for service accounts since there is no interactive\n"
             " authentication flow. Simply use the service account key you used to authenticate."
         )
+
+
+class OAuth2Flow:
+    def __init__(self, client_config, scopes):
+        self.client_config = parse_config(client_config)
+        self.scopes = scopes
+
+    def web_flow(self):
+        flow = self._create_flow()
+        flow.run_local_server()
+        return OAuth2Credentials(flow.credentials)
+
+    def console_flow(self):
+        flow = self._create_flow()
+        flow.redirect_uri = "http://localhost:8080/"
+        auth_url, _ = flow.authorization_url(prompt="consent")
+        print(
+            "To use the console flow, you must complete the following steps:\n"
+            "1. Go to the URL below\n"
+            "2. Complete the steps to authenticate with your Google Account\n"
+            "3. You will be taken to an error page with a URL starting with localhost:8080\n"
+            "4. Copy the entire URL into the input below.\n"
+            "\n"
+            "Go to the following URL and complete the steps:\n",
+            auth_url,
+        )
+
+        callback_url = input("Paste the url: ").strip()
+        try:
+            code = self._extract_callback_url_code(callback_url)
+        except KeyError:
+            raise ValueError("Could not extract token from URL")
+        flow.fetch_token(code=code)
+        return OAuth2Credentials(flow.credentials)
+
+    def _create_flow(self):
+        return InstalledAppFlow.from_client_config(
+            client_config=self.client_config, scopes=self.scopes
+        )
+
+    @staticmethod
+    def _extract_callback_url_code(callback_url):
+        parsed = urllib.parse.urlparse(callback_url)
+        params = urllib.parse.parse_qs(parsed.query)
+        return params["code"][0]
