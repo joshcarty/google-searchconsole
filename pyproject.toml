@@ -8,7 +8,7 @@ description = "A wrapper for the Google Search Console API."
 authors = [
   {name = "Josh Carty", email = "carty.josh@gmail.com"},
 ]
-version = "0.0.3"
+version = "0.1.0"
 license = {text = "MIT"}
 dependencies = [
     "google-api-python-client>=1.7.3",
