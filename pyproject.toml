@@ -19,18 +19,16 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.1.0",
     "tox>=4.0.0",
     "tox-uv>=1.29.0",
+    "python-dotenv>=0.21.1",
     "coverage>=7.0.0",
+    "ruff>=0.1.0",
 ]
-
-[dependency-groups]
-dev = [
-    "ruff>=0.1.0",
-    "tox>=4.0.0",
-    "tox-uv>=1.29.0",
+test = [
+    "python-dotenv>=0.21.1",
     "coverage>=7.0.0",
+    "ruff>=0.1.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -42,12 +40,7 @@ skip_missing_interpreters = true
 
 [tool.tox.env_run_base]
 description = "Run unit tests and doctests"
-deps = [
-    "google-api-python-client>=1.7.3",
-    "google-auth>=1.5.0",
-    "google-auth-oauthlib>=0.2.0",
-    "python-dateutil>=2.7.3",
-]
+extras = ["test"]
 pass_env = [
     "SEARCHCONSOLE_CLIENT_CONFIG",
     "SEARCHCONSOLE_CREDENTIALS",
@@ -60,8 +53,7 @@ commands = [
 
 [tool.tox.env.lint]
 description = "Run code quality checks with ruff"
-skip_install = true
-deps = ["ruff"]
+extras = ["test"]
 commands = [
     ["ruff", "check", "src/searchconsole", "tests.py"],
     ["ruff", "format", "--check", "src/searchconsole", "tests.py"],
@@ -69,8 +61,7 @@ commands = [
 
 [tool.tox.env.format]
 description = "Format code with ruff"
-skip_install = true
-deps = ["ruff"]
+extras = ["test"]
 commands = [
     ["ruff", "format", "src/searchconsole", "tests.py"],
     ["ruff", "check", "--fix", "src/searchconsole", "tests.py"],
@@ -78,13 +69,7 @@ commands = [
 
 [tool.tox.env.coverage]
 description = "Run tests with coverage reporting"
-deps = [
-    "google-api-python-client>=1.7.3",
-    "google-auth>=1.5.0",
-    "google-auth-oauthlib>=0.2.0",
-    "python-dateutil>=2.7.3",
-    "coverage",
-]
+extras = ["test"]
 commands = [
     ["coverage", "run", "-m", "unittest", "tests"],
     ["coverage", "report", "-m"],

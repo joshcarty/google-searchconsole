@@ -1,12 +1,16 @@
 # encoding: utf-8
 
-import unittest
-import doctest
 import datetime
-import os
+import doctest
 import json
+import os
+import unittest
+
+import dotenv
 
 import searchconsole
+
+dotenv.load_dotenv()
 
 
 def get_client_config():

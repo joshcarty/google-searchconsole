@@ -17,8 +17,8 @@ import warnings
 
 from apiclient import discovery
 from google.oauth2.credentials import Credentials as _OAuth2Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.service_account import Credentials as _ServiceAccountCredentials
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .account import Account
 
