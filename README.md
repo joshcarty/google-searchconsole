@@ -23,6 +23,8 @@ This package is built on top of
 and is heavily inspired, from design to implementation, by [@debrouwere](https://github.com/debrouwere)'s
 fantastic [`google-analytics`](https://github.com/debrouwere/google-analytics) package.
 
+Check out the full [documentation](https://joshcarty.github.io/google-searchconsole/).
+
 ## Quickstart
 
 First, install the package using:
