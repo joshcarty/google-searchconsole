@@ -1,0 +1,120 @@
+# ============================================================================
+#
+# Configuration for Google Search Console Python Library Documentation
+#
+# ============================================================================
+
+[project]
+
+# The site_name is shown in the page header and the browser window title
+site_name = "Google Search Console for Python"
+
+# The site_description is included in the HTML head and should contain a
+# meaningful description of the site content for use by search engines.
+site_description = "A Python client for the Google Search Console API with easy authentication, querying and exporting."
+
+# The site_author attribute. This is used in the HTML head element.
+site_author = "Josh Carty"
+
+# The site_url is the canonical URL for your site.
+site_url = "https://joshcarty.github.io/google-searchconsole/"
+
+# The copyright notice appears in the page footer and can contain an HTML
+# fragment.
+copyright = """
+Copyright &copy; 2025 Josh Carty. MIT License.
+"""
+
+# Repository configuration
+repo_url = "https://github.com/joshcarty/google-searchconsole"
+repo_name = "joshcarty/google-searchconsole"
+
+# Explicitly defined navigation structure
+nav = [
+  { "Home" = "index.md" },
+  { "Getting Started" = "getting-started.md" },
+  { "Authentication" = "authentication.md" },
+  { "API Reference" = "api-reference.md" },
+  { "Examples" = "examples.md" },
+  { "Contributing" = "contributing.md" },
+]
+
+# ----------------------------------------------------------------------------
+# Section for configuring theme options
+# ----------------------------------------------------------------------------
+[project.theme]
+
+# Use the default Zensical variant
+#variant = "classic"
+
+# Favicon
+#favicon = "assets/images/favicon.png"
+
+# Language
+language = "en"
+
+# Features
+features = [
+    "announce.dismiss",
+    "content.action.edit",
+    "content.action.view",
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.footer",
+    "navigation.indexes",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.path",
+    "navigation.sections",
+    "navigation.top",
+    "navigation.tracking",
+    "search.highlight",
+]
+
+# ----------------------------------------------------------------------------
+# Color palette configuration with dark mode support
+# ----------------------------------------------------------------------------
+[[project.theme.palette]]
+scheme = "default"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# ----------------------------------------------------------------------------
+# Font configuration
+# ----------------------------------------------------------------------------
+[project.theme.font]
+text = "Inter"
+code = "JetBrains Mono"
+
+# ----------------------------------------------------------------------------
+# Icons configuration
+# ----------------------------------------------------------------------------
+[project.theme.icon]
+logo = "lucide/search"
+repo = "fontawesome/brands/github"
+
+# ----------------------------------------------------------------------------
+# Social links in the footer
+# ----------------------------------------------------------------------------
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/joshcarty/google-searchconsole"
+name = "GitHub"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/python"
+link = "https://pypi.org/project/searchconsole/"
+name = "PyPI"

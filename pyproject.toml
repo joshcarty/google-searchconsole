@@ -82,3 +82,8 @@ exclude = [".tox", "*.egg", "build", "__pycache__"]
 
 [tool.ruff.lint]
 extend-ignore = []
+
+[dependency-groups]
+dev = [
+    "zensical>=0.0.8",
+]
